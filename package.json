@@ -1,0 +1,27 @@
+{
+	"name": "resend-pwa",
+	"version": "0.0.1",
+	"private": true,
+	"description": "Self-hosted PWA email client for Resend: webhook server + installable web app",
+	"license": "MIT",
+	"type": "module",
+	"workspaces": [
+		"apps/*"
+	],
+	"scripts": {
+		"dev": "bun run --filter '*' dev",
+		"dev:web": "bun run --filter web dev",
+		"dev:server": "bun run --filter server dev",
+		"build": "bun run --filter web build",
+		"start": "bun run --filter server start",
+		"check": "bun run --filter '*' check",
+		"lint": "prettier --check . && bun run --filter '*' lint",
+		"format": "prettier --write .",
+		"vapid": "bun run --filter server vapid"
+	},
+	"devDependencies": {
+		"prettier": "^3.10.1",
+		"prettier-plugin-svelte": "^4.1.1",
+		"prettier-plugin-tailwindcss": "^0.8.1"
+	}
+}

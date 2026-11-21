@@ -1,0 +1,12 @@
+**/node_modules
+**/build
+**/.svelte-kit
+.git
+.env
+data.json
+data.json.tmp
+data
+.env.*
+!.env.example
+.claude
+.vscode

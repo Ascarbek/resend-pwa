@@ -1,0 +1,31 @@
+node_modules
+
+# Output
+build
+.svelte-kit
+dist
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Server data (push subscriptions etc.)
+data.json
+data.json.tmp
+/data/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Claude Code
+.claude/
+CLAUDE.md
+CLAUDE.local.md
+**/CLAUDE.md
+**/CLAUDE.local.md
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
