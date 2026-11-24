@@ -2,6 +2,7 @@ import { createHash, timingSafeEqual } from 'node:crypto';
 import type { PushSubscription } from 'web-push';
 import { env } from '../env.ts';
 import { addSubscription, removeSubscription } from '../push/subscriptions.ts';
+import { getResend } from '../resend/client.ts';
 
 /** Returns a 401 response unless the request carries `Authorization: Bearer <ACCESS_TOKEN>`. */
 export function requireAuth(req: Request): Response | null {
@@ -39,6 +40,38 @@ export const apiRoutes = {
 			await removeSubscription(endpoint);
 			return new Response(null, { status: 204 });
 		})
+	},
+	/**
+	 * One page of received emails, newest first (Resend's cursor pagination).
+	 * Query: `limit` (1-100, default 50), `after` (id of the last email of the previous page).
+	 */
+	'/api/emails': {
+		GET: authed(async (req) => {
+			const params = new URL(req.url).searchParams;
+			const limit = Math.min(Math.max(Number(params.get('limit')) || 50, 1), 100);
+			const after = params.get('after') || undefined;
+
+			const { data, error } = await getResend().emails.receiving.list({ limit, after });
+			if (error) return resendError(error);
+
+			return Response.json({
+				emails: data.data.map((email) => ({
+					id: email.id,
+					from: email.from,
+					subject: email.subject,
+					created_at: email.created_at,
+					attachments: email.attachments.length
+				})),
+				has_more: data.has_more
+			});
+		})
 	}
-	// TODO: /api/emails (list/get received + sent, send) proxying the Resend API.
+	// TODO: get one email, sent emails, send, reply.
 };
+
+/** Maps a Resend SDK error to a response, keeping rate limits visible to the PWA. */
+function resendError(error: { message: string; statusCode: number | null }): Response {
+	console.error(`[resend] ${error.statusCode ?? '?'}: ${error.message}`);
+	const status = error.statusCode === 429 ? 429 : 502;
+	return Response.json({ error: error.message }, { status });
+}
