@@ -21,6 +21,8 @@ export default defineConfig({
 		})
 	],
 	server: {
+		// Listen on all interfaces so phones on the same network can reach the dev server.
+		host: true,
 		proxy: {
 			'/api': serverUrl,
 			'/webhooks': serverUrl
