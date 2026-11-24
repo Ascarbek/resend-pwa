@@ -20,6 +20,9 @@ data.json.tmp
 !.env.example
 
 # Claude Code
+# Intentionally not committed for now. The project is at a very early stage and these docs aren't
+# ready to share with contributors yet. Once the guidance is fully written down, the Claude files
+# will be added to the repo.
 .claude/
 CLAUDE.md
 CLAUDE.local.md
