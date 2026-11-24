@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # ---- build the PWA --------------------------------------------------------
-FROM oven/bun:1.4 AS build
+FROM oven/bun:1.4.3 AS build
 WORKDIR /app
 COPY package.json bun.lock ./
 COPY apps/web/package.json apps/web/
@@ -11,7 +11,7 @@ COPY . .
 RUN bun run build
 
 # ---- runtime: Bun server serving webhooks, API and the static PWA ----------
-FROM oven/bun:1.4-slim AS runtime
+FROM oven/bun:1.4.3-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=production \
     PORT=3000 \
