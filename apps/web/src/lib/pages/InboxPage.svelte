@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Static design playground: hard-coded test data, no API wiring, no interactions.
+	// Inbox: hard-coded test data for now, no API wiring or interactions yet.
 	import MagnifyingGlass from 'phosphor-svelte/lib/MagnifyingGlass';
 	import PencilSimple from 'phosphor-svelte/lib/PencilSimple';
 
@@ -126,7 +126,7 @@
 </script>
 
 <svelte:head>
-	<title>Inbox · Design</title>
+	<title>Inbox</title>
 </svelte:head>
 
 <div class="flex h-dvh flex-col bg-stone-950 text-stone-100 antialiased">
