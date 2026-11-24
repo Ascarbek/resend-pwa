@@ -13,7 +13,9 @@ export class ApiError extends Error {
 /** Thin fetch wrapper for the Bun server's `/api/*` routes. */
 export async function api<T = unknown>(path: string, init: RequestInit = {}): Promise<T> {
 	const headers = new Headers(init.headers);
-	if (accessToken.value) headers.set('authorization', `Bearer ${accessToken.value}`);
+	// An explicit header wins, e.g. when checking a candidate token at sign-in.
+	if (accessToken.value && !headers.has('authorization'))
+		headers.set('authorization', `Bearer ${accessToken.value}`);
 	if (init.body && !headers.has('content-type')) headers.set('content-type', 'application/json');
 
 	const res = await fetch(`/api${path}`, { ...init, headers });

@@ -5,6 +5,7 @@
 	import { fade, slide } from 'svelte/transition';
 	import Eye from 'phosphor-svelte/lib/Eye';
 	import EyeSlash from 'phosphor-svelte/lib/EyeSlash';
+	import { checkToken } from '#lib/api/auth.ts';
 	import { accessToken } from '#lib/stores/session.svelte.ts';
 
 	let token = $state('');
@@ -15,26 +16,13 @@
 	const canSubmit = $derived(token.trim().length > 0 && !checking);
 	const duration = $derived(prefersReducedMotion.current ? 0 : 150);
 
-	/** Asks the server whether `candidate` is the right ACCESS_TOKEN. */
-	async function check(candidate: string): Promise<'ok' | 'invalid' | 'unreachable'> {
-		try {
-			const res = await fetch('/api/auth/check', {
-				headers: { authorization: `Bearer ${candidate}` }
-			});
-			if (res.ok) return 'ok';
-			return res.status === 401 ? 'invalid' : 'unreachable';
-		} catch {
-			return 'unreachable';
-		}
-	}
-
 	async function submit(event: SubmitEvent) {
 		event.preventDefault();
 		if (!canSubmit) return;
 		const candidate = token.trim();
 		checking = true;
 		error = '';
-		const result = await check(candidate);
+		const result = await checkToken(candidate);
 		checking = false;
 		if (result === 'ok') {
 			// Only a token the server accepted is ever persisted.
