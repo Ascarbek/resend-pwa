@@ -3,8 +3,8 @@
 	import { resolve } from '$app/paths';
 	import { prefersReducedMotion } from 'svelte/motion';
 	import { fade, slide } from 'svelte/transition';
-	import Eye from 'phosphor-svelte/lib/Eye';
-	import EyeSlash from 'phosphor-svelte/lib/EyeSlash';
+	import EyeIcon from 'phosphor-svelte/lib/EyeIcon';
+	import EyeSlashIcon from 'phosphor-svelte/lib/EyeSlashIcon';
 	import { checkToken } from '#lib/api/auth.ts';
 	import { accessToken } from '#lib/stores/session.svelte.ts';
 
@@ -75,9 +75,9 @@
 					{#key visible}
 						<span class="absolute" in:fade={{ duration }} out:fade={{ duration }}>
 							{#if visible}
-								<EyeSlash size={20} weight="bold" />
+								<EyeSlashIcon size={20} weight="bold" />
 							{:else}
-								<Eye size={20} weight="bold" />
+								<EyeIcon size={20} weight="bold" />
 							{/if}
 						</span>
 					{/key}

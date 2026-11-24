@@ -5,8 +5,8 @@
 	import { fade, fly } from 'svelte/transition';
 	import { goto } from '$app/navigation';
 	import { resolve } from '$app/paths';
-	import MagnifyingGlass from 'phosphor-svelte/lib/MagnifyingGlass';
-	import PencilSimple from 'phosphor-svelte/lib/PencilSimple';
+	import MagnifyingGlassIcon from 'phosphor-svelte/lib/MagnifyingGlassIcon';
+	import PencilSimpleIcon from 'phosphor-svelte/lib/PencilSimpleIcon';
 	import { ApiError } from '#lib/api/client.ts';
 	import { listEmails, type EmailSummary } from '#lib/api/emails.ts';
 	import { accessToken } from '#lib/stores/session.svelte.ts';
@@ -137,7 +137,7 @@
 			class="flex size-11 shrink-0 items-center justify-center rounded-full border border-stone-700 bg-stone-900 text-stone-300"
 			aria-label="Search"
 		>
-			<MagnifyingGlass size={20} weight="bold" />
+			<MagnifyingGlassIcon size={20} weight="bold" />
 		</div>
 	</header>
 
@@ -210,6 +210,6 @@
 		class="fixed right-5 bottom-[max(env(safe-area-inset-bottom),1.25rem)] flex size-14 items-center justify-center rounded-full border border-amber-900 bg-amber-950 text-amber-400 shadow-lg shadow-black/40"
 		aria-label="Compose"
 	>
-		<PencilSimple size={24} weight="bold" />
+		<PencilSimpleIcon size={24} weight="bold" />
 	</div>
 </div>
