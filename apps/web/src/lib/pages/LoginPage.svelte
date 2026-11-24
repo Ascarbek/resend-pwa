@@ -1,38 +1,10 @@
 <script lang="ts">
-	import { goto } from '$app/navigation';
-	import { resolve } from '$app/paths';
-	import { prefersReducedMotion } from 'svelte/motion';
 	import { fade, slide } from 'svelte/transition';
 	import EyeIcon from 'phosphor-svelte/lib/EyeIcon';
 	import EyeSlashIcon from 'phosphor-svelte/lib/EyeSlashIcon';
-	import { checkToken } from '#lib/api/auth.ts';
-	import { accessToken } from '#lib/stores/session.svelte.ts';
+	import { createLoginController } from '#lib/controllers/login/controller.svelte.ts';
 
-	let token = $state('');
-	let visible = $state(false);
-	let checking = $state(false);
-	let error = $state('');
-
-	const canSubmit = $derived(token.trim().length > 0 && !checking);
-	const duration = $derived(prefersReducedMotion.current ? 0 : 150);
-
-	async function submit(event: SubmitEvent) {
-		event.preventDefault();
-		if (!canSubmit) return;
-		const candidate = token.trim();
-		checking = true;
-		error = '';
-		const result = await checkToken(candidate);
-		checking = false;
-		if (result === 'ok') {
-			// Only a token the server accepted is ever persisted.
-			accessToken.value = candidate;
-			await goto(resolve('/'));
-		} else {
-			error =
-				result === 'invalid' ? 'That token isn’t valid.' : 'Couldn’t reach the server. Try again.';
-		}
-	}
+	const login = createLoginController();
 </script>
 
 <svelte:head>
@@ -45,18 +17,17 @@
 		<h1 class="text-4xl font-bold tracking-tight text-white">Sign in</h1>
 	</header>
 
-	<form class="flex flex-col gap-4 px-5 pt-4" onsubmit={submit}>
+	<form class="flex flex-col gap-4 px-5 pt-4" onsubmit={login.submit}>
 		<label class="flex flex-col gap-2">
 			<span class="text-xs font-semibold tracking-[0.2em] text-stone-500 uppercase">
 				Access token
 			</span>
 			<div class="relative">
 				<input
-					type={visible ? 'text' : 'password'}
-					bind:value={token}
-					oninput={() => (error = '')}
-					aria-invalid={error ? true : undefined}
-					aria-describedby={error ? 'token-error' : undefined}
+					type={login.visible ? 'text' : 'password'}
+					bind:value={() => login.token, login.setToken}
+					aria-invalid={login.error ? true : undefined}
+					aria-describedby={login.error ? 'token-error' : undefined}
 					name="access-token"
 					autocomplete="current-password"
 					autocapitalize="off"
@@ -67,14 +38,18 @@
 				/>
 				<button
 					type="button"
-					onclick={() => (visible = !visible)}
-					aria-label={visible ? 'Hide token' : 'Show token'}
-					aria-pressed={visible}
+					onclick={login.toggleVisible}
+					aria-label={login.visible ? 'Hide token' : 'Show token'}
+					aria-pressed={login.visible}
 					class="absolute inset-y-0 right-1.5 my-auto flex size-11 items-center justify-center rounded-full text-stone-400"
 				>
-					{#key visible}
-						<span class="absolute" in:fade={{ duration }} out:fade={{ duration }}>
-							{#if visible}
+					{#key login.visible}
+						<span
+							class="absolute"
+							in:fade={{ duration: login.duration }}
+							out:fade={{ duration: login.duration }}
+						>
+							{#if login.visible}
 								<EyeSlashIcon size={20} weight="bold" />
 							{:else}
 								<EyeIcon size={20} weight="bold" />
@@ -85,14 +60,14 @@
 			</div>
 		</label>
 
-		{#if error}
+		{#if login.error}
 			<p
 				id="token-error"
 				role="alert"
 				class="text-sm font-medium text-red-400"
-				transition:slide={{ duration }}
+				transition:slide={{ duration: login.duration }}
 			>
-				{error}
+				{login.error}
 			</p>
 		{/if}
 
@@ -103,10 +78,10 @@
 
 		<button
 			type="submit"
-			disabled={!canSubmit}
+			disabled={!login.canSubmit}
 			class="mt-2 h-14 rounded-full border border-amber-900 bg-amber-950 text-base font-semibold text-amber-400 transition-opacity duration-150 disabled:opacity-40 motion-reduce:transition-none"
 		>
-			{checking ? 'Checking…' : 'Sign in'}
+			{login.checking ? 'Checking…' : 'Sign in'}
 		</button>
 	</form>
 </div>
